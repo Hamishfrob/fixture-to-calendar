@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Fixture to Calendar",
+  "version": "1.0.0",
+  "description": "Highlight fixture dates on any webpage and convert them to calendar events.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

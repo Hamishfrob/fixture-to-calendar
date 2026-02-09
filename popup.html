@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fixture to Calendar</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Fixture to Calendar</h1>
+
+    <!-- Loading state -->
+    <div id="loading" class="state">
+      <div class="spinner"></div>
+      <p>Parsing your fixtures...</p>
+    </div>
+
+    <!-- Error state -->
+    <div id="error" class="state" style="display: none;">
+      <p class="error-icon">!</p>
+      <p id="errorMessage" class="error-text"></p>
+      <button id="retryBtn" class="btn btn-secondary">Try Again</button>
+    </div>
+
+    <!-- Events list -->
+    <div id="events" style="display: none;">
+      <p class="event-count" id="eventCount"></p>
+      <div id="eventList"></div>
+      <div class="actions">
+        <button id="downloadBtn" class="btn btn-primary">Download .ics File</button>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
