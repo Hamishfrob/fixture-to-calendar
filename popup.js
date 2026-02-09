@@ -98,6 +98,95 @@ function createEventCard(event, index) {
     });
   });
 
+  // Venue enrichment button (only if there's a location and no venue data yet)
+  if (event.location && event.location.trim() && !event.venueData) {
+    const enrichBtn = document.createElement('button');
+    enrichBtn.className = 'btn-enrich';
+    enrichBtn.textContent = 'Get Venue Details';
+    enrichBtn.addEventListener('click', async () => {
+      enrichBtn.disabled = true;
+      enrichBtn.textContent = '';
+
+      // Show loading spinner
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'venue-loading';
+      loadingDiv.innerHTML = '<span class="mini-spinner"></span> Looking up venue...';
+      enrichBtn.after(loadingDiv);
+      enrichBtn.style.display = 'none';
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          type: 'enrichVenue',
+          event: {
+            title: currentEvents[index].title,
+            location: currentEvents[index].location,
+            date: currentEvents[index].date
+          }
+        });
+
+        if (response.success) {
+          currentEvents[index].venueData = response.venueData;
+          currentEvents[index].includeVenueInIcs = true;
+          showEvents(currentEvents); // Re-render to show venue section
+        } else {
+          loadingDiv.remove();
+          enrichBtn.style.display = 'block';
+          enrichBtn.disabled = false;
+          enrichBtn.textContent = 'Retry — ' + (response.error || 'Failed to get venue details');
+        }
+      } catch (err) {
+        loadingDiv.remove();
+        enrichBtn.style.display = 'block';
+        enrichBtn.disabled = false;
+        enrichBtn.textContent = 'Retry — could not reach extension';
+      }
+    });
+    card.appendChild(enrichBtn);
+  }
+
+  // Venue details section (shown when venue data exists)
+  if (event.venueData) {
+    const venueSection = document.createElement('div');
+    venueSection.className = 'venue-details expanded'; // Start expanded so user sees the data
+
+    let venueBodyHtml = '';
+    if (event.venueData.fullAddress) {
+      venueBodyHtml += `<p><strong>Address:</strong> ${escapeHtml(event.venueData.fullAddress)}</p>`;
+    }
+    if (event.venueData.description && event.venueData.description !== 'Venue details not available') {
+      venueBodyHtml += `<p><strong>About:</strong> ${escapeHtml(event.venueData.description)}</p>`;
+    }
+    if (event.venueData.transport) {
+      venueBodyHtml += `<p><strong>Getting there:</strong> ${escapeHtml(event.venueData.transport)}</p>`;
+    }
+    if (event.venueData.notes) {
+      venueBodyHtml += `<p><strong>Notes:</strong> ${escapeHtml(event.venueData.notes)}</p>`;
+    }
+
+    venueSection.innerHTML = `
+      <div class="venue-header">Venue Details</div>
+      <div class="venue-body">
+        ${venueBodyHtml}
+        <label class="venue-toggle">
+          <input type="checkbox" ${event.includeVenueInIcs ? 'checked' : ''}>
+          Include venue details in calendar event
+        </label>
+      </div>
+    `;
+
+    // Toggle expand/collapse
+    venueSection.querySelector('.venue-header').addEventListener('click', () => {
+      venueSection.classList.toggle('expanded');
+    });
+
+    // Toggle include in .ics
+    venueSection.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+      currentEvents[index].includeVenueInIcs = e.target.checked;
+    });
+
+    card.appendChild(venueSection);
+  }
+
   return card;
 }
 
@@ -106,7 +195,7 @@ downloadBtn.addEventListener('click', () => {
   // Read latest values from inputs before generating
   document.querySelectorAll('.event-card').forEach((card) => {
     const idx = parseInt(card.dataset.index);
-    card.querySelectorAll('input').forEach(input => {
+    card.querySelectorAll('input[data-field]').forEach(input => {
       currentEvents[idx][input.dataset.field] = input.value;
     });
   });
@@ -153,6 +242,21 @@ function generateICS(events) {
     if (event.location) {
       ics += `LOCATION:${escapeICS(event.location)}\r\n`;
     }
+
+    // Add venue details to description if the user opted in
+    if (event.venueData && event.includeVenueInIcs) {
+      let desc = '';
+      if (event.venueData.fullAddress) desc += `Address: ${event.venueData.fullAddress}\n`;
+      if (event.venueData.description && event.venueData.description !== 'Venue details not available') {
+        desc += `Venue: ${event.venueData.description}\n`;
+      }
+      if (event.venueData.transport) desc += `Getting there: ${event.venueData.transport}\n`;
+      if (event.venueData.notes) desc += `Notes: ${event.venueData.notes}`;
+      if (desc.trim()) {
+        ics += `DESCRIPTION:${escapeICS(desc.trim())}\r\n`;
+      }
+    }
+
     ics += `DTSTAMP:${formatICSDate(new Date())}\r\n`;
     ics += 'END:VEVENT\r\n';
   });

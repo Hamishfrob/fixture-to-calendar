@@ -1,3 +1,38 @@
+/* ============================================
+   Fixture to Calendar — Settings Styles
+   Palette: Lilac Purple + Golden Ratio
+   ============================================ */
+
+:root {
+  --primary: #9B8EC4;
+  --primary-dark: #7B6EA4;
+  --primary-light: #E8E4F0;
+  --accent-teal: #3BC4A8;
+  --accent-coral: #C43B5E;
+  --text: #2D2B33;
+  --text-secondary: #6B6779;
+  --bg: #F7F5FA;
+  --card-bg: #FFFFFF;
+  --border: #D9D5E0;
+
+  --sp-xs: 5px;
+  --sp-sm: 8px;
+  --sp-md: 13px;
+  --sp-lg: 21px;
+  --sp-xl: 34px;
+  --sp-xxl: 55px;
+
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-base: 14px;
+  --fs-md: 18px;
+  --fs-lg: 23px;
+
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 13px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,110 +40,135 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f5f5;
-  color: #333;
-  padding: 40px 20px;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: var(--sp-xxl) var(--sp-lg);
+  line-height: 1.618;
 }
 
 .container {
-  max-width: 500px;
+  max-width: 520px;
   margin: 0 auto;
-  background: #fff;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-xl);
+  box-shadow: 0 3px 13px rgba(155, 142, 196, 0.12);
+  border: 1px solid var(--border);
 }
 
 h1 {
-  font-size: 22px;
-  margin-bottom: 4px;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  margin-bottom: var(--sp-xs);
+  color: var(--text);
+  letter-spacing: -0.3px;
 }
 
 .subtitle {
-  color: #666;
-  margin-bottom: 28px;
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  margin-bottom: var(--sp-xl);
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: var(--sp-lg);
   position: relative;
 }
 
 label {
   display: block;
   font-weight: 600;
-  margin-bottom: 6px;
-  font-size: 14px;
+  margin-bottom: var(--sp-xs);
+  font-size: var(--fs-base);
+  color: var(--text);
 }
 
 .help-text {
-  font-size: 13px;
-  color: #777;
-  margin-bottom: 8px;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-sm);
+  line-height: 1.5;
 }
 
 input[type="password"],
 input[type="text"],
 input[type="number"] {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s;
+  padding: var(--sp-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input:focus {
   outline: none;
-  border-color: #4a90d9;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(155, 142, 196, 0.15);
 }
 
 .toggle-btn {
   position: absolute;
-  right: 8px;
-  bottom: 8px;
-  background: none;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
+  right: var(--sp-sm);
+  bottom: var(--sp-sm);
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-xs) var(--sp-md);
+  font-size: var(--fs-xs);
   cursor: pointer;
-  color: #666;
+  color: var(--primary-dark);
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .toggle-btn:hover {
-  background: #f0f0f0;
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
 }
 
 .save-btn {
   width: 100%;
-  padding: 12px;
-  background: #4a90d9;
+  padding: var(--sp-md);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(155, 142, 196, 0.3);
+  letter-spacing: 0.2px;
 }
 
 .save-btn:hover {
-  background: #3a7bc8;
+  box-shadow: 0 4px 13px rgba(155, 142, 196, 0.4);
+  transform: translateY(-1px);
+}
+
+.save-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(155, 142, 196, 0.3);
 }
 
 .status {
   text-align: center;
-  margin-top: 12px;
-  font-size: 14px;
-  min-height: 20px;
+  margin-top: var(--sp-md);
+  font-size: var(--fs-base);
+  min-height: var(--sp-lg);
+  font-weight: 600;
 }
 
 .status.success {
-  color: #2e7d32;
+  color: var(--accent-teal);
 }
 
 .status.error {
-  color: #c62828;
+  color: var(--accent-coral);
 }
